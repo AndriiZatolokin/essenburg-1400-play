@@ -1,0 +1,49 @@
+{
+  "formats": [
+    "DXT",
+    "ASTC"
+  ],
+  "files": [
+    {
+      "Name": "Web.data.unityweb",
+      "Length": 55162092,
+      "SHA256": "1EF303239D8D19A4FB93F4238E99C2D3AAC7A06F56D724AA0F5C90ED6ECB0F0C"
+    },
+    {
+      "Name": "Web.framework.js.unityweb",
+      "Length": 77182,
+      "SHA256": "D912B2FF05BF158DA3B4A4FAA0D3CD06A5DB794F44627450377C3AD0B9B5CF6C"
+    },
+    {
+      "Name": "Web.loader.js",
+      "Length": 48779,
+      "SHA256": "156ED5554120DE4B278C3F0EC663084704D647D582DF4562D4BAAF66F08E7B36"
+    },
+    {
+      "Name": "Web.wasm.unityweb",
+      "Length": 11507169,
+      "SHA256": "E0283CDC2817F6D838C5D6C0E5DE13AF12B391880AC6880A15AC561A15BC5A03"
+    },
+    {
+      "Name": "WebASTC.data.unityweb",
+      "Length": 50595543,
+      "SHA256": "000F99D2B11042D5BB2C50EEBB18BC310103C2CB777F1AA813DB4AF38D61ED31"
+    },
+    {
+      "Name": "WebASTC.framework.js.unityweb",
+      "Length": 77182,
+      "SHA256": "D912B2FF05BF158DA3B4A4FAA0D3CD06A5DB794F44627450377C3AD0B9B5CF6C"
+    },
+    {
+      "Name": "WebASTC.loader.js",
+      "Length": 48779,
+      "SHA256": "156ED5554120DE4B278C3F0EC663084704D647D582DF4562D4BAAF66F08E7B36"
+    },
+    {
+      "Name": "WebASTC.wasm.unityweb",
+      "Length": 11507169,
+      "SHA256": "E0283CDC2817F6D838C5D6C0E5DE13AF12B391880AC6880A15AC561A15BC5A03"
+    }
+  ],
+  "version": "0.1.1"
+}

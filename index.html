@@ -21,30 +21,52 @@
   <canvas id="unity-canvas" tabindex="0" aria-label="Essenburg 1400 — середньовічне місто"></canvas>
   <div id="loading"><strong>Essenburg 1400</strong><span>Завантажуємо місто…</span><progress id="progress" value="0" max="1"></progress></div>
   <div id="error" role="alert"></div>
+  <button id="retry" hidden style="position:fixed;bottom:15%;left:20%;right:20%">Спробувати ще раз</button>
   <div id="tools" hidden><button id="reset" aria-label="Повернути початковий ракурс">⌂</button><button id="tips" aria-label="Керування" aria-expanded="true">?</button></div>
   <div id="help" hidden>Один палець — рух. Два — масштаб і поворот; рух двома вгору/вниз — нахил.<br>Миша: перетягування — рух, права кнопка — поворот, колесо — масштаб.</div>
   <script>
     const canvas=document.getElementById('unity-canvas');
     const loading=document.getElementById('loading');
     const error=document.getElementById('error');
-    function showError(message){error.style.display='block';error.textContent='Не вдалося запустити місто.\n'+message;loading.style.display='none';}
+    const retry=document.getElementById('retry');
+    const launchKey='essenburg-launch-0.1.1';
+    function clearLaunch(){try{sessionStorage.removeItem(launchKey);}catch{}}
+    function showError(message){clearLaunch();error.style.display='block';error.textContent='Не вдалося запустити місто.\n'+message;loading.style.display='none';retry.hidden=false;}
+    retry.onclick=()=>{clearLaunch();location.reload();};
+    window.addEventListener('error',event=>showError(event.message||'Помилка браузера.'));
+    window.addEventListener('unhandledrejection',event=>showError(String(event.reason)));
+    canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();showError('Браузер перервав відображення міста. Спробуй закрити інші вкладки й запустити ще раз.');});
     canvas.addEventListener('contextmenu',e=>e.preventDefault());
     canvas.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
-    const loader=document.createElement('script');loader.src='Build/Web.loader.js';
+    const probe=document.createElement('canvas');
+    const gl=probe.getContext('webgl2');
+    const astc=!!gl?.getExtension('WEBGL_compressed_texture_astc');
+    gl?.getExtension('WEBGL_lose_context')?.loseContext();
+    const mobile=matchMedia('(pointer:coarse)').matches||/iPhone|iPad|Android/.test(navigator.userAgent);
+    const pixelRatio=Math.min(window.devicePixelRatio||1,mobile?1:1.5,Math.sqrt((mobile?800000:1500000)/(innerWidth*innerHeight)));
+    window.essenburgDiagnostics={version:'0.1.1',textureFormat:astc?'ASTC':'DXT',pixelRatio,stage:'loading'};
+    const loader=document.createElement('script');loader.src='Build/'+(astc?'WebASTC.loader.js':'Web.loader.js')+'?v=0.1.1';
     loader.onload=()=>createUnityInstance(canvas,{
-      dataUrl:'Build/Web.data.unityweb',frameworkUrl:'Build/Web.framework.js.unityweb',codeUrl:'Build/Web.wasm.unityweb',
-      streamingAssetsUrl:'StreamingAssets',companyName:'Essenburg',productName:'Essenburg 1400',productVersion:'0.1.0',
-      matchWebGLToCanvasSize:true,devicePixelRatio:Math.min(window.devicePixelRatio||1,1.5),
+      dataUrl:'Build/'+(astc?'WebASTC.data.unityweb':'Web.data.unityweb')+'?v=0.1.1',frameworkUrl:'Build/'+(astc?'WebASTC.framework.js.unityweb':'Web.framework.js.unityweb')+'?v=0.1.1',codeUrl:'Build/'+(astc?'WebASTC.wasm.unityweb':'Web.wasm.unityweb')+'?v=0.1.1',
+      streamingAssetsUrl:'StreamingAssets',companyName:'Essenburg',productName:'Essenburg 1400',productVersion:'0.1.1',
+      matchWebGLToCanvasSize:true,devicePixelRatio:pixelRatio,
       showBanner:(message,type)=>{if(type==='error')showError(message);else console.warn(message);}
     },p=>document.getElementById('progress').value=p).then(instance=>{
       window.essenburg=instance;loading.style.display='none';canvas.focus();
+      window.essenburgDiagnostics.stage='running';
+      setTimeout(clearLaunch,30000);
       document.getElementById('tools').hidden=false;
       document.getElementById('help').hidden=false;
       document.getElementById('reset').onclick=()=>{instance.SendMessage('Essenburg Camera','ResetView');canvas.focus();};
       document.getElementById('tips').onclick=()=>{const help=document.getElementById('help');help.hidden=!help.hidden;document.getElementById('tips').setAttribute('aria-expanded',String(!help.hidden));};
       setTimeout(()=>{document.getElementById('help').hidden=true;document.getElementById('tips').setAttribute('aria-expanded','false');},12000);
     }).catch(showError);
-    loader.onerror=()=>showError('Не завантажився файл гри. Перевір з’єднання.');document.body.appendChild(loader);
+    loader.onerror=()=>showError('Не завантажився файл гри. Перевір з’єднання.');
+    let interrupted=0;
+    try{const previous=JSON.parse(sessionStorage.getItem(launchKey)||'null');if(previous&&Date.now()-previous.time<300000)interrupted=previous.attempts;sessionStorage.setItem(launchKey,JSON.stringify({time:Date.now(),attempts:interrupted+1}));}catch{}
+    if(interrupted>=2)showError('Браузер кілька разів перервав запуск. Автоматичні спроби зупинено. Закрий інші вкладки та натисни «Спробувати ще раз».');
+    else document.body.appendChild(loader);
   </script>
 </body>
 </html>
+
