@@ -29,7 +29,7 @@
     const loading=document.getElementById('loading');
     const error=document.getElementById('error');
     const retry=document.getElementById('retry');
-    const launchKey='essenburg-launch-0.1.1';
+    const launchKey='essenburg-launch-0.1.2';
     function clearLaunch(){try{sessionStorage.removeItem(launchKey);}catch{}}
     function showError(message){clearLaunch();error.style.display='block';error.textContent='Не вдалося запустити місто.\n'+message;loading.style.display='none';retry.hidden=false;}
     retry.onclick=()=>{clearLaunch();location.reload();};
@@ -43,12 +43,15 @@
     const astc=!!gl?.getExtension('WEBGL_compressed_texture_astc');
     gl?.getExtension('WEBGL_lose_context')?.loseContext();
     const mobile=matchMedia('(pointer:coarse)').matches||/iPhone|iPad|Android/.test(navigator.userAgent);
-    const pixelRatio=Math.min(window.devicePixelRatio||1,mobile?1:1.5,Math.sqrt((mobile?800000:1500000)/(innerWidth*innerHeight)));
-    window.essenburgDiagnostics={version:'0.1.1',textureFormat:astc?'ASTC':'DXT',pixelRatio,stage:'loading'};
-    const loader=document.createElement('script');loader.src='Build/'+(astc?'WebASTC.loader.js':'Web.loader.js')+'?v=0.1.1';
+    const choosePixelRatio=()=>Math.min(window.devicePixelRatio||1,mobile?1:1.5,Math.sqrt((mobile?800000:1500000)/(innerWidth*innerHeight)));
+    let pixelRatio=choosePixelRatio();
+    window.essenburgDiagnostics={version:'0.1.2',textureFormat:astc?'ASTC':'DXT',pixelRatio,stage:'loading'};
+    let resizePending=false;
+    window.addEventListener('resize',()=>{if(resizePending)return;resizePending=true;requestAnimationFrame(()=>{resizePending=false;pixelRatio=choosePixelRatio();window.essenburgDiagnostics.pixelRatio=pixelRatio;if(window.essenburg)window.essenburg.Module.devicePixelRatio=pixelRatio;});});
+    const loader=document.createElement('script');loader.src='Build/'+(astc?'WebASTC.loader.js':'Web.loader.js')+'?v=0.1.2';
     loader.onload=()=>createUnityInstance(canvas,{
-      dataUrl:'Build/'+(astc?'WebASTC.data.unityweb':'Web.data.unityweb')+'?v=0.1.1',frameworkUrl:'Build/'+(astc?'WebASTC.framework.js.unityweb':'Web.framework.js.unityweb')+'?v=0.1.1',codeUrl:'Build/'+(astc?'WebASTC.wasm.unityweb':'Web.wasm.unityweb')+'?v=0.1.1',
-      streamingAssetsUrl:'StreamingAssets',companyName:'Essenburg',productName:'Essenburg 1400',productVersion:'0.1.1',
+      dataUrl:'Build/'+(astc?'WebASTC.data.unityweb':'Web.data.unityweb')+'?v=0.1.2',frameworkUrl:'Build/'+(astc?'WebASTC.framework.js.unityweb':'Web.framework.js.unityweb')+'?v=0.1.2',codeUrl:'Build/'+(astc?'WebASTC.wasm.unityweb':'Web.wasm.unityweb')+'?v=0.1.2',
+      streamingAssetsUrl:'StreamingAssets',companyName:'Essenburg',productName:'Essenburg 1400',productVersion:'0.1.2',
       matchWebGLToCanvasSize:true,devicePixelRatio:pixelRatio,
       showBanner:(message,type)=>{if(type==='error')showError(message);else console.warn(message);}
     },p=>document.getElementById('progress').value=p).then(instance=>{
