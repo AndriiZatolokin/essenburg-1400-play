@@ -1,0 +1,7 @@
+Essenburg 1400 — hobby visual prototype, no economic gameplay yet.
+Town layout and medieval art: Medieval Village & Dungeon Kit 0.2.0,
+Daniel Gruginski / algumacoisaqq, CC0-1.0.
+https://algumacoisaqq.itch.io/medieval-village-dungeon-kit
+https://github.com/danielgruginski/MedievalVillageKit
+The ready-made ValleyTown is the author's example town, adopted with modifications.
+Unity runtime is subject to Unity's terms; this is a compiled game, not an asset pack.

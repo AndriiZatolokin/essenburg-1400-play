@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <title>Essenburg 1400</title>
+  <link rel="icon" href="data:,">
+  <style>
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#26352b;color:#f3e9d0;font:18px system-ui,sans-serif;overscroll-behavior:none}
+    #unity-canvas{width:100%;height:100%;display:block;touch-action:none}
+    #loading{position:fixed;inset:0;display:grid;place-content:center;text-align:center;gap:16px;pointer-events:none}
+    progress{width:min(70vw,400px);height:18px;accent-color:#bda566}
+    #error{position:fixed;inset:15%;padding:24px;background:#30291e;display:none;overflow:auto;white-space:pre-wrap}
+    #tools{position:fixed;top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));display:flex;gap:8px}
+    button{min-height:48px;min-width:48px;border:1px solid #bda566;border-radius:8px;background:#26352be8;color:#f3e9d0;font:16px system-ui;padding:10px;touch-action:manipulation}
+    #help{position:fixed;bottom:max(12px,env(safe-area-inset-bottom));left:12px;right:12px;margin:auto;max-width:480px;background:#26352be8;border-radius:8px;padding:12px;font-size:15px;pointer-events:none}
+    [hidden]{display:none!important}
+  </style>
+</head>
+<body>
+  <canvas id="unity-canvas" tabindex="0" aria-label="Essenburg 1400 — середньовічне місто"></canvas>
+  <div id="loading"><strong>Essenburg 1400</strong><span>Завантажуємо місто…</span><progress id="progress" value="0" max="1"></progress></div>
+  <div id="error" role="alert"></div>
+  <div id="tools" hidden><button id="reset" aria-label="Повернути початковий ракурс">⌂</button><button id="tips" aria-label="Керування" aria-expanded="true">?</button></div>
+  <div id="help" hidden>Один палець — рух. Два — масштаб і поворот; рух двома вгору/вниз — нахил.<br>Миша: перетягування — рух, права кнопка — поворот, колесо — масштаб.</div>
+  <script>
+    const canvas=document.getElementById('unity-canvas');
+    const loading=document.getElementById('loading');
+    const error=document.getElementById('error');
+    function showError(message){error.style.display='block';error.textContent='Не вдалося запустити місто.\n'+message;loading.style.display='none';}
+    canvas.addEventListener('contextmenu',e=>e.preventDefault());
+    canvas.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
+    const loader=document.createElement('script');loader.src='Build/Web.loader.js';
+    loader.onload=()=>createUnityInstance(canvas,{
+      dataUrl:'Build/Web.data.unityweb',frameworkUrl:'Build/Web.framework.js.unityweb',codeUrl:'Build/Web.wasm.unityweb',
+      streamingAssetsUrl:'StreamingAssets',companyName:'Essenburg',productName:'Essenburg 1400',productVersion:'0.1.0',
+      matchWebGLToCanvasSize:true,devicePixelRatio:Math.min(window.devicePixelRatio||1,1.5),
+      showBanner:(message,type)=>{if(type==='error')showError(message);else console.warn(message);}
+    },p=>document.getElementById('progress').value=p).then(instance=>{
+      window.essenburg=instance;loading.style.display='none';canvas.focus();
+      document.getElementById('tools').hidden=false;
+      document.getElementById('help').hidden=false;
+      document.getElementById('reset').onclick=()=>{instance.SendMessage('Essenburg Camera','ResetView');canvas.focus();};
+      document.getElementById('tips').onclick=()=>{const help=document.getElementById('help');help.hidden=!help.hidden;document.getElementById('tips').setAttribute('aria-expanded',String(!help.hidden));};
+      setTimeout(()=>{document.getElementById('help').hidden=true;document.getElementById('tips').setAttribute('aria-expanded','false');},12000);
+    }).catch(showError);
+    loader.onerror=()=>showError('Не завантажився файл гри. Перевір з’єднання.');document.body.appendChild(loader);
+  </script>
+</body>
+</html>
