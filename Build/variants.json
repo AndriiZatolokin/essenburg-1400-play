@@ -1,49 +1,50 @@
 {
-  "formats": [
-    "DXT",
-    "ASTC"
+  "scenes": [
+    "Essenburg_Riverside",
+    "Essenburg_BakeryAnimation2"
   ],
   "files": [
     {
-      "Name": "Web.data.unityweb",
-      "Length": 60153470,
-      "SHA256": "940DA1757BA74BE940D6E7342A1E0EC902ECD0A701CFE32B1E0D42D9B45709EF"
+      "sha256": "4211E5EF5F563F189746E54177F7529CB41F1E487795B7FBF56E83300C03DD0B",
+      "name": "Web.data.unityweb",
+      "bytes": 74444385
     },
     {
-      "Name": "Web.framework.js.unityweb",
-      "Length": 77182,
-      "SHA256": "8F64D76385D5B18C27A82C29DCD31B9D7873B296B6198ABF4FE01A561733D597"
+      "sha256": "D71765917DD326B2F9A22C1DB576A87A5AB5150E0B9A742DEE1CFCE760578589",
+      "name": "Web.framework.js.unityweb",
+      "bytes": 76745
     },
     {
-      "Name": "Web.loader.js",
-      "Length": 48779,
-      "SHA256": "C283D04B7FA550D3F3E52BF4C546B919AF5D79110856014191299D6DEC584D4C"
+      "sha256": "EEB725B936F61440397493AC5A60E60076AE95285B5B8346756BEA6EA14849C8",
+      "name": "Web.loader.js",
+      "bytes": 48779
     },
     {
-      "Name": "Web.wasm.unityweb",
-      "Length": 11571127,
-      "SHA256": "67FB3EDAE12C3D843430036B805848F1B291AB338881F3B16C19460F96CF1789"
+      "sha256": "533089ECA9B7BA16D80D9FCE3D34A67D276992CFCFA12764DFFE2515CC401622",
+      "name": "Web.wasm.unityweb",
+      "bytes": 9541606
     },
     {
-      "Name": "WebASTC.data.unityweb",
-      "Length": 55399537,
-      "SHA256": "E25CEA4097700CADECC971CAE87263B7425BC2C141A298DC675D14E31184E83F"
+      "sha256": "7AC2926486A4DE2EC765B623DBCA40FAA7DA3776198CD5EDF2462A6BB2244FDE",
+      "name": "WebASTC.data.unityweb",
+      "bytes": 68756143
     },
     {
-      "Name": "WebASTC.framework.js.unityweb",
-      "Length": 77182,
-      "SHA256": "8F64D76385D5B18C27A82C29DCD31B9D7873B296B6198ABF4FE01A561733D597"
+      "sha256": "D71765917DD326B2F9A22C1DB576A87A5AB5150E0B9A742DEE1CFCE760578589",
+      "name": "WebASTC.framework.js.unityweb",
+      "bytes": 76745
     },
     {
-      "Name": "WebASTC.loader.js",
-      "Length": 48779,
-      "SHA256": "C283D04B7FA550D3F3E52BF4C546B919AF5D79110856014191299D6DEC584D4C"
+      "sha256": "EEB725B936F61440397493AC5A60E60076AE95285B5B8346756BEA6EA14849C8",
+      "name": "WebASTC.loader.js",
+      "bytes": 48779
     },
     {
-      "Name": "WebASTC.wasm.unityweb",
-      "Length": 11571127,
-      "SHA256": "67FB3EDAE12C3D843430036B805848F1B291AB338881F3B16C19460F96CF1789"
+      "sha256": "533089ECA9B7BA16D80D9FCE3D34A67D276992CFCFA12764DFFE2515CC401622",
+      "name": "WebASTC.wasm.unityweb",
+      "bytes": 9541606
     }
   ],
-  "version": "0.1.3"
+  "version": "0.2.0",
+  "source": "60c8c54d44abc14690457158baea3b68fb8d32ec"
 }

@@ -11,7 +11,7 @@
     #loading{position:fixed;inset:0;display:grid;place-content:center;text-align:center;gap:16px;pointer-events:none}
     progress{width:min(70vw,400px);height:18px;accent-color:#bda566}
     #error{position:fixed;inset:15%;padding:24px;background:#30291e;display:none;overflow:auto;white-space:pre-wrap}
-    #tools{position:fixed;top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));display:flex;gap:8px}
+    #tools{position:fixed;top:max(92px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));display:flex;gap:8px}
     button{min-height:48px;min-width:48px;border:1px solid #bda566;border-radius:8px;background:#26352be8;color:#f3e9d0;font:16px system-ui;padding:10px;touch-action:manipulation}
     #help{position:fixed;bottom:max(12px,env(safe-area-inset-bottom));left:12px;right:12px;margin:auto;max-width:480px;background:#26352be8;border-radius:8px;padding:12px;font-size:15px;pointer-events:none}
     [hidden]{display:none!important}
@@ -22,14 +22,14 @@
   <div id="loading"><strong>Essenburg 1400</strong><span>Завантажуємо місто…</span><progress id="progress" value="0" max="1"></progress></div>
   <div id="error" role="alert"></div>
   <button id="retry" hidden style="position:fixed;bottom:15%;left:20%;right:20%">Спробувати ще раз</button>
-  <div id="tools" hidden><button id="reset" aria-label="Повернути початковий ракурс">⌂</button><button id="tips" aria-label="Керування" aria-expanded="true">?</button></div>
+  <div id="tools" hidden><button id="reset" aria-label="Повернути початковий ракурс">⌂</button><button id="tips" aria-label="Керування" aria-expanded="false">?</button></div>
   <div id="help" hidden>Один палець — рух. Два — масштаб і поворот; рух двома вгору/вниз — нахил.<br>Миша: перетягування — рух, права кнопка — поворот, колесо — масштаб.</div>
   <script>
     const canvas=document.getElementById('unity-canvas');
     const loading=document.getElementById('loading');
     const error=document.getElementById('error');
     const retry=document.getElementById('retry');
-    const launchKey='essenburg-launch-0.1.3';
+    const launchKey='essenburg-launch-0.2.0';
     function clearLaunch(){try{sessionStorage.removeItem(launchKey);}catch{}}
     function showError(message){clearLaunch();error.style.display='block';error.textContent='Не вдалося запустити місто.\n'+message;loading.style.display='none';retry.hidden=false;}
     retry.onclick=()=>{clearLaunch();location.reload();};
@@ -45,22 +45,21 @@
     const mobile=matchMedia('(pointer:coarse)').matches||/iPhone|iPad|Android/.test(navigator.userAgent);
     const choosePixelRatio=()=>Math.min(window.devicePixelRatio||1,mobile?1:1.5,Math.sqrt((mobile?800000:1500000)/(innerWidth*innerHeight)));
     let pixelRatio=choosePixelRatio();
-    window.essenburgDiagnostics={version:'0.1.3',textureFormat:astc?'ASTC':'DXT',pixelRatio,stage:'loading'};
+    window.essenburgDiagnostics={version:'0.2.0',textureFormat:astc?'ASTC':'DXT',pixelRatio,stage:'loading'};
     let resizePending=false;
     window.addEventListener('resize',()=>{if(resizePending)return;resizePending=true;requestAnimationFrame(()=>{resizePending=false;pixelRatio=choosePixelRatio();window.essenburgDiagnostics.pixelRatio=pixelRatio;if(window.essenburg)window.essenburg.Module.devicePixelRatio=pixelRatio;});});
-    const loader=document.createElement('script');loader.src='Build/'+(astc?'WebASTC.loader.js':'Web.loader.js')+'?v=0.1.3';
+    const loader=document.createElement('script');loader.src='Build/'+(astc?'WebASTC.loader.js':'Web.loader.js')+'?v=0.2.0';
     loader.onload=()=>createUnityInstance(canvas,{
-      dataUrl:'Build/'+(astc?'WebASTC.data.unityweb':'Web.data.unityweb')+'?v=0.1.3',frameworkUrl:'Build/'+(astc?'WebASTC.framework.js.unityweb':'Web.framework.js.unityweb')+'?v=0.1.3',codeUrl:'Build/'+(astc?'WebASTC.wasm.unityweb':'Web.wasm.unityweb')+'?v=0.1.3',
-      streamingAssetsUrl:'StreamingAssets',companyName:'Essenburg',productName:'Essenburg 1400',productVersion:'0.1.3',
-      matchWebGLToCanvasSize:true,devicePixelRatio:pixelRatio,
+      dataUrl:'Build/'+(astc?'WebASTC.data.unityweb':'Web.data.unityweb')+'?v=0.2.0',frameworkUrl:'Build/'+(astc?'WebASTC.framework.js.unityweb':'Web.framework.js.unityweb')+'?v=0.2.0',codeUrl:'Build/'+(astc?'WebASTC.wasm.unityweb':'Web.wasm.unityweb')+'?v=0.2.0',
+      streamingAssetsUrl:'StreamingAssets',companyName:'Essenburg',productName:'Essenburg 1400',productVersion:'0.2.0',
+      matchWebGLToCanvasSize:true,devicePixelRatio:pixelRatio,autoSyncPersistentDataPath:true,
       showBanner:(message,type)=>{if(type==='error')showError(message);else console.warn(message);}
     },p=>document.getElementById('progress').value=p).then(instance=>{
       window.essenburg=instance;loading.style.display='none';canvas.focus();
       window.essenburgDiagnostics.stage='running';
       setTimeout(clearLaunch,30000);
       document.getElementById('tools').hidden=false;
-      document.getElementById('help').hidden=false;
-      document.getElementById('reset').onclick=()=>{instance.SendMessage('Essenburg Camera','ResetView');canvas.focus();};
+      document.getElementById('reset').onclick=()=>{instance.SendMessage('Essenburg Riverside Camera','ResetView');canvas.focus();};
       document.getElementById('tips').onclick=()=>{const help=document.getElementById('help');help.hidden=!help.hidden;document.getElementById('tips').setAttribute('aria-expanded',String(!help.hidden));};
       setTimeout(()=>{document.getElementById('help').hidden=true;document.getElementById('tips').setAttribute('aria-expanded','false');},12000);
     }).catch(showError);
@@ -72,4 +71,5 @@
   </script>
 </body>
 </html>
+
 
